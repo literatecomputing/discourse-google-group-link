@@ -1,4 +1,5 @@
 en:
   js:
-    discourse_plugin_name:
-      placeholder: placeholder
+    google_groups_link:
+      link_target: Google Groups
+      link_intro: See original message on 

@@ -1,14 +1,46 @@
 # frozen_string_literal: true
 
-# name: discourse-plugin-name
+# name: discourse-google-groups-link
 # about: TODO
 # version: 0.0.1
-# authors: Discourse
-# url: TODO
+# authors: pfaffman
+# url: https://github.com/literatecomputing/discourse-google-group-link
 # required_version: 2.7.0
 # transpile_js: true
 
 enabled_site_setting :plugin_name_enabled
+GOOGLE_GROUP_LINK = 'google-group-link'
 
 after_initialize do
+  register_category_custom_field_type("mirrors_google_group", :boolean)
+  register_topic_custom_field_type("google_group_link", :string)
+
+  add_to_serializer(:topic_view, :google_group_link) do
+    next unless self.topic.custom_fields[GOOGLE_GROUP_LINK]
+    value = self.topic.custom_fields[GOOGLE_GROUP_LINK]  # get value from custom field
+  end
+
+  add_to_class(:topic, :add_google_group_link) do
+    topic = self
+    next if self.custom_fields[GOOGLE_GROUP_LINK]
+    p = Post.find_by(topic_id: topic.id, post_number: 1)
+    m = /To view this discussion on the web visit <a href=3D"(.*?)"/m.match(p.raw_email)
+    next unless m
+    link = m[1].gsub(/=\n/, "")
+    self.custom_fields[GOOGLE_GROUP_LINK] = link
+    rescue => e
+      Rails.logger.warn("Google link: add_google_group_link #{topic.title} failed")
+  end
+
+  add_model_callback(:topic, :before_create) do
+    t = self
+    category = Category.find(t.category_id)
+    return unless category
+    return unless category.mailinglist_mirror
+    puts "Processing: #{t.title}"
+    t.add_google_group_link
+    rescue => e
+      Rails.logger.warn("Google link: callback #{t.title} failed")
+  end
+
 end

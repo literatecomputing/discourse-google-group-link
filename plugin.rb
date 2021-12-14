@@ -28,6 +28,7 @@ after_initialize do
     n = /To view this discussion on the web visit (https:\/\/groups.google.com\/.*?gmail.com)\./m.match(p.raw_email)
     next unless m || n
     link = (m || n)[1]
+    link = link.gsub("=\n", "")
     self.custom_fields[GOOGLE_GROUP_LINK] = link
     rescue => e
       Rails.logger.warn("Google link: add_google_group_link #{topic.title} failed")

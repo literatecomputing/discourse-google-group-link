@@ -6,9 +6,7 @@ This plugin will search `raw_email` of the first post of new topics in categorie
 
      See original message on <a href=google-group-url>Google Groups</a>
 
-"See original message on" can be customized in the `link_intro` site setting.
-
-'Google Groups' can be customized in the `link_target` site setting.
+That text can be customized at `https://your.forum/admin/customize/site_texts?q=google_groups_link`
 
 To process already existing topics, you can do this in rails:
 

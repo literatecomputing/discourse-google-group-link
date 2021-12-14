@@ -1,7 +1,11 @@
 {{#if this.topic.google_group_link}}
   {{i18n "google_groups_link.link_intro"}}
   {{#if currentUser.external_links_in_new_tab}}
-    <a target="_blank" href={{this.topic.google_group_link}}>
+    <a
+      target="_blank"
+      rel="noopener noreferrer"
+      href={{this.topic.google_group_link}}
+    >
       {{i18n "google_groups_link.link_target"}}
     </a>
   {{else}}

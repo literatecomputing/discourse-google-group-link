@@ -26,8 +26,9 @@ after_initialize do
     p = Post.find_by(topic_id: topic.id, post_number: 1)
     m = /To view this discussion on the web visit <a href=3D"(.*?)"/m.match(p.raw_email)
     n = /To view this discussion on the web visit (https:\/\/groups.google.com\/.*?gmail.com)\./m.match(p.raw_email)
-    next unless m || n
-    link = (m || n)[1]
+    o = /To view this discussion on the web visit (https:\/\/groups.google.com\/.*?googlegroups.com)\./m.match(p.raw_email)
+    next unless m || n || o
+    link = (m || n || o)[1]
     link = link.gsub("=\n", "")
     self.custom_fields[GOOGLE_GROUP_LINK] = link
     rescue => e

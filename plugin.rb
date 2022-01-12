@@ -35,12 +35,13 @@ after_initialize do
       Rails.logger.warn("Google link: add_google_group_link #{topic.title} failed")
   end
 
-  add_model_callback(:topic, :before_create) do
+  add_model_callback(:topic, :after_create) do
     t = self
+    Rails.logger.warn("Google link: callback #{t.title} was called")
     category = Category.find(t.category_id)
     return unless category
     return unless category.mailinglist_mirror
-    puts "Processing: #{t.title}"
+    Rails.logger.warn("Google link: processing #{t.title}")
     t.add_google_group_link
     rescue => e
       Rails.logger.warn("Google link: callback #{t.title} failed")

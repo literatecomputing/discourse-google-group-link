@@ -32,7 +32,7 @@ after_initialize do
     link = link.gsub("=\n", "")
     self.custom_fields[GOOGLE_GROUP_LINK] = link
     rescue => e
-      Rails.logger.warn("Google link: add_google_group_link #{topic.title} failed")
+      Rails.logger.warn("Google link: add_google_group_link #{topic.title} failed with #{e}")
   end
 
   add_model_callback(:topic, :after_create) do
@@ -44,7 +44,7 @@ after_initialize do
     Rails.logger.warn("Google link: processing #{t.title}")
     t.add_google_group_link
     rescue => e
-      Rails.logger.warn("Google link: callback #{t.title} failed")
+      Rails.logger.warn("Google link: callback #{t.title} failed with #{e}")
   end
 
   add_to_class(:topic, :google_group_link_ensure_consistency) do

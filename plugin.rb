@@ -22,12 +22,13 @@ after_initialize do
 
   add_to_class(:topic, :add_google_group_link) do
     topic = self
-    next if self.custom_fields[GOOGLE_GROUP_LINK]
+    return if self.custom_fields[GOOGLE_GROUP_LINK]
     p = Post.find_by(topic_id: topic.id, post_number: 1)
+    return unless p.raw_email
     m = /To view this discussion on the web visit <a href=3D"(.*?)"/m.match(p.raw_email)
     n = /To view this discussion on the web visit (https:\/\/groups.google.com\/.*?gmail.com)\./m.match(p.raw_email)
     o = /To view this discussion on the web visit (https:\/\/groups.google.com\/.*?googlegroups.com)\./m.match(p.raw_email)
-    next unless m || n || o
+    return unless m || n || o
     link = (m || n || o)[1]
     link = link.gsub("=\n", "")
     self.custom_fields[GOOGLE_GROUP_LINK] = link
@@ -35,9 +36,9 @@ after_initialize do
       Rails.logger.warn("Google link: add_google_group_link #{topic.title} failed with #{e}")
   end
 
-  add_model_callback(:topic, :after_create) do
+  add_model_callback(:topic, :after_create_commit) do
     t = self
-    Rails.logger.warn("Google link: callback #{t.title} was called")
+    Rails.logger.warn("Google link: callback #{t.title} was called" with cat #{t.category_id})
     category = Category.find(t.category_id)
     return unless category
     return unless category.mailinglist_mirror

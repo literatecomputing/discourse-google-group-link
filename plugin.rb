@@ -38,7 +38,7 @@ after_initialize do
 
   add_model_callback(:topic, :after_create_commit) do
     t = self
-    Rails.logger.warn("Google link: callback #{t.title} was called" with cat #{t.category_id})
+    Rails.logger.warn("Google link: callback #{t.title} was called with cat #{t.category_id}")
     category = Category.find(t.category_id)
     return unless category
     return unless category.mailinglist_mirror
